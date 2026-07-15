@@ -1,2 +1,2 @@
 # altaids
-A repository of code and information for the [Altaids computer designed by David Hunter](https://www.nutsvolts.com/magazine/article/build-a-pocket-sized-altair-computer).
+A repository of code and information for the [Altaids computer](https://www.nutsvolts.com/magazine/article/build-a-pocket-sized-altair-computer), a pocket-sized Altair-like 8080 computer.
