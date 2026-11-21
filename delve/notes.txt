@@ -1,0 +1,40 @@
+Delve idea notes
+
+The basic idea:
+A hero works his way further and further down into a cave, collecting stolen(?)
+gems and fighting baddies. Each level of the cave will have 1 gem to find, and
+a set of stairs to go down to the next level.
+
+There will be a map visible on the screen each turn. The map starts entirely 
+obscured, but as you explore the floor, the map fills in each cell you visit.
+
+When encountering a baddie, you'll have to fight. This uses a dice roll system
+with basic stats. Stats can be increased by finding potions scattered around 
+the levels: strength to hit harder, speed to dodge attacks. 
+Also health potions can restore your HP.
+
+Use a procedural system like space rescue, so there can be one standard 
+"campaign" with identical floors every time (with new stair placement maybe).
+But also offer a "random" adventure, that will change the seed.
+
+Baddies will have a set HP, strength and speed to simplify things, though
+baddie density will increase as you move down the levels.
+
+When we generate the level, save each cell to the @ array. Use multiples of 
+10 to set the contents of the cell (eg 0 = empty, 10 = baddie, etc). When 
+the player visits a cell, add 1 to the location so we can easily track which 
+cells have been visited.
+
+Things that can be in a cell: 
+0 - nothing, it's just empty
+10 - health potion
+20 - strength potion
+30 - speed potion
+40 - baddie
+50 - gem
+60 - stairs
+
+
+NOTE: The gem needs to "hum" so we can locate it; otherwise, it's just wandering.
+Similarly, the stairs need to make a noise. Perhaps we just use whichever is closer
+as our beacon? Or is that too annoying?
