@@ -1,18 +1,21 @@
 # WORDBREAKER for the Altaids
 
+This program was vibe coded with Claude Code.
+
 A five-letter word guessing game. You get 6 guesses. Each letter of a guess is
 marked green (right letter, right spot), yellow (in the word, wrong spot) or
 grey (not in the word). An alphabet strip shows what's left: `.` = ruled out.
 
-**3,450 words fit in 8KB:** 2,000 common words that can be the secret,
-plus 1,450 rarer ones that are only accepted as guesses. About 380 bytes stay
+**3,350 words fit in 8KB:** 2,000 common words that can be the secret,
+plus 1,350 rarer ones that are only accepted as guesses. About 360 bytes stay
 free for the game to run in.
 
 ## Playing it
 
 1. In Tiny BASIC type `XLOAD`, then in TeraTerm use File > Transfer > XMODEM > Send
    and pick `WORDBREAKER.TBI`.
-2. `RUN`.
+2. `RUN`, then answer the hard mode question. In hard mode you can't use a letter
+   already marked grey (not in the word). Your answer stays set until the next RUN.
 
 The settings are on line 40:
 
@@ -29,8 +32,7 @@ own because it doesn't include line 1 or line 32767. `build.py` makes the .TBI f
 
 ## How the words fit
 
-Plain 5-bit letters take 25 bits per word. My first suggestion, grouping by
-first letter, got that down to 20 bits. This version averages **11.6 bits per word**:
+Plain 5-bit letters take 25 bits per word. This version averages **11.6 bits per word**:
 
 1. **Sort the list and store only what changed.** For each word we store how many
    letters it shares with the previous word, then how far the first changed letter moved on
@@ -65,6 +67,7 @@ USR entry points:
 | `USR(8232,G)` | 1 if the word at address G is in the list |
 | `USR(8235)` | total number of words |
 | `USR(8238,G)` | mark guess G, update the alphabet, write the display line to G+8 (for PUT$), return the number of greens |
+| `USR(8241,G)` | hard mode: the ASCII code of the first letter in G already marked grey, or 0 |
 
 ## Changing the word list
 
@@ -82,7 +85,7 @@ the serial routines intercepted:
 
     python runtbi.py WORDBREAKER.TBI "RUN\r" "\r" "crane\r"
 
-`verify.py` checks that all 3,450 words are accepted, that 2,000 non-words are rejected,
+`verify.py` checks that all 3,350 words are accepted, that 2,000 non-words are rejected,
 that every secret unpacks correctly, and that 3,000 random guesses (including repeated
 letters) are marked correctly. Timings assume 2,400 baud output, so a turn takes about
 1 second, mostly sending the colored tiles.

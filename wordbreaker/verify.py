@@ -67,3 +67,14 @@ for trial in range(3000):
     alpha = ''.join(chr(65+k) if st.get(chr(65+k), 0) == 0 else '.' if st[chr(65+k)] == 1 else chr(97+k) for k in range(26))
     assert out[len(exp)+3:] == alpha, (sec, g, out, alpha)
 print('3000 random markings match the reference rules (incl. repeated letters)')
+# hard mode check: a letter marked not-in-word is reported, others are not
+for trial in range(500):
+    st = [random.choice([0, 0, 1, 2, 3]) for _ in range(26)]
+    for k in range(26):
+        a = 0x3E00 - 2 * (21 + k); c.mem[a] = st[k]; c.mem[a+1] = 0
+    g = random.choice(words)
+    c.mem[G:G+6] = g.encode() + b'\0'
+    bad = [ch.upper() for ch in g if st[ord(ch) - 97] == 1]
+    v, t = call(8241, G)
+    assert v == (ord(bad[0]) if bad else 0), (g, bad, v)
+print('500 hard-mode checks correct')

@@ -17,6 +17,8 @@
 ;                 letter status in @(21)-@(46), writes the display line
 ;                 (tiles + alphabet) to G+8 for PUT$, returns greens (0-5)
 ;                 uses BASIC variable C: 1 = ANSI colors, 0 = text marks
+;   USR(8241,G)   hard mode: returns the ASCII code of the first letter in
+;                 guess G already marked not in the word (@(21+K)=1), else 0
 ;
 ; Constants supplied by the build script:
 ;   KEY   XOR key for the table area      PLEN  payload length
@@ -49,6 +51,7 @@ KEYS	EQU	3DD6H		; @(21)
 	JMP	CHECK
 	JMP	NWRD
 	JMP	MARK
+	JMP	HARDCK
 ;
 ; BASE = TXTUNF - 1 - PLEN
 INIT:	PUSH	H
@@ -546,6 +549,34 @@ PSTR:	MOV	A,M
 	INX	D
 	INX	H
 	JMP	PSTR
+;
+; HARDCK: HL -> guess. Returns the first ruled-out letter, or 0
+HARDCK:	MVI	B,5
+HC1:	MOV	A,M
+	ANI	0DFH
+	MOV	C,A
+	SUI	'A'
+	CPI	26
+	JNC	HC2		; not a letter
+	ADD	A
+	MOV	E,A
+	PUSH	H
+	MVI	A,LOW(KEYS)
+	SUB	E
+	MOV	L,A
+	MVI	H,HIGH(KEYS)
+	MOV	A,M
+	POP	H
+	CPI	1
+	JNZ	HC2
+	MOV	L,C
+	MVI	H,0
+	RET
+HC2:	INX	H
+	DCR	B
+	JNZ	HC1
+	LXI	H,0
+	RET
 STR1:	DB	1BH,'[30;4',0
 STR2:	DB	1BH,'[0m',0
 	END
